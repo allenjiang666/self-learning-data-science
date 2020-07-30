@@ -3,4 +3,4 @@
 __pycache__/
 *.csv
 env.py
-NUMBERS_data.csv
+tutorial/
