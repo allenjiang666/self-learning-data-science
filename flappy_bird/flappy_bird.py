@@ -94,6 +94,8 @@ class Bird:
 
 while True:
 	bird.move()
+	bird.jump()
+	bird.draw()
 
 
 
