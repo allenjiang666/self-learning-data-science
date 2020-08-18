@@ -4,7 +4,7 @@ import time
 import os 
 import random
 
-WIN_WIDTH = 600
+WIN_WIDTH = 500
 WIN_HEIGHT = 800 
 
 BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
@@ -23,14 +23,15 @@ class Bird:
 
 	def __init__(self,x, y):
 		# represent start position of the bird
-		self.x - x
-		self.y = 
+		self.x =x
+		self.y = y
 		# how much the image is tilting
-		self.tilt =
+		self.tilt = 0
 		# Basically is t  
 		self.tick_count = 0
 		# bird is not moving at starting postition
 		self.vel = 0
+		# seems like the staring position
 		self.height = self.y
 		self.img_count = 0
 		self.img = self.IMGS[0]
@@ -51,7 +52,7 @@ class Bird:
 		d = self.vel*self.tick_count + 1.5 *self.tick_count **2
 
 		# when moving down, stop at pixle 16.
-		if d>>16:
+		if d>=16:
 			d = 16
 
 		# when moving up, fine tuning its position
@@ -63,39 +64,65 @@ class Bird:
 
 		if d < 0 or self.y < self.height +50:
 			if self.tilt < self.MAX_ROTATION:
-				self.titl = self.MAX_ROTATION
+				self.tilt = self.MAX_ROTATION
 		else:
 			if self.tilt > -90:
-				sefl.tilt -=self.ROT_VEL
-
+				self.tilt -=self.ROT_VEL
+  
 	def draw(self, win):
-		sefl.img_count += 1
+		self.img_count += 1
 
 		# bird is flappying its wings at different frame period
 		if self.img_count < self.ANIMATION_TIME:
 			self.img = self.IMGS[0]
 		elif self.img_count < self.ANIMATION_TIME*2:
-			sefl.img = self.IMGS[1]
+			self.img = self.IMGS[1]
 		elif self.img_count < self.ANIMATION_TIME*3:
-			sefl.img = self.IMGS[2]
+			self.img = self.IMGS[2]
 		elif self.img_count < self.ANIMATION_TIME*4:
-			sefl.img = self.IMGS[1]
-		elif self.img_count < self.ANIMATION_TIME*4 + 1:
-			sefl.img = self.IMGS[0]
+			self.img = self.IMGS[1]
+		elif self.img_count == self.ANIMATION_TIME*4 + 1:
+			self.img = self.IMGS[0]
 			self.img_count = 0
 
 		# if the bird is going down, it reset to the fat wing
 		if self.tilt <= -80:
 			self.img = self.IMGS[1]
-			self.img_count - self.ANIMATION_TIME*2
+			# when jump the bird image is the same when bird at it's original position
+			self.img_count = self.ANIMATION_TIME*2
 
+		rotated_image = pygame.transform.rotate(self.img, self.tilt)
+		new_rect = rotated_image.get_rect(center=self.img.get_rect(topleft=(self.x,self.y)).center)
+		win.blit(rotated_image, new_rect.topleft)
 
+	def get_mask(self):
+		return pygame.mask.from_surface(self.img)
 
+def draw_window(win, bird):
+	win.blit(BG_IMG,(0,0))
+	bird.draw(win)
+	pygame.display.update()
 
-while True:
-	bird.move()
-	bird.jump()
-	bird.draw()
+def main():
+	bird = Bird(200,200)
+	win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+	clock = pygame.time.Clock()
+
+	run = True
+	while run:
+		clock.tick(100)
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				run = False
+
+		# bird.move()
+		draw_window(win,bird)
+
+	pygame.quit()
+	quit()
+
+main()
+
 
 
 
