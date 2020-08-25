@@ -4,7 +4,8 @@ from tkinter import *
 root = Tk()
 # setup the software title
 root.title('Simple caculator')
-
+# add icon to the program
+root.iconbitmap('calculator.ico')
 
 def insert_number(number):
 	# don't use ~ in python as not, works in pandas
