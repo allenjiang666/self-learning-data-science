@@ -7,7 +7,8 @@ root.title('Simple caculator')
 
 
 def insert_number(number):
-	if ~e.get().isdigit():
+	# don't use ~ in python as not, works in pandas
+	if  not (e.get().isdigit()):
 		e.delete(0,END)
 	# get what is in the input box
 	current_number = e.get()
@@ -84,7 +85,7 @@ def cle():
 
 
 
-e = Entry(root, width=40, borderwidth=3)
+e = Entry(root, width=60, borderwidth=3)
 e.grid(row=0,column=0, ipady= 20, columnspan=4)
 
 button_0 = Button(root, text='0', padx=40, pady=20, command=lambda:insert_number(0))
