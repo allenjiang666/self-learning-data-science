@@ -7,6 +7,8 @@ root.title('Simple caculator')
 
 
 def insert_number(number):
+	if ~e.get().isdigit():
+		e.delete(0,END)
 	# get what is in the input box
 	current_number = e.get()
 	# delete what is in the input box
@@ -16,31 +18,50 @@ def insert_number(number):
 
 def add():
 	global first_num
-	first_num = int(e.get())
+	if e.get().isdigit():
+		first_num = int(e.get())
+	else:
+		first_num=0
 	e.delete(0,END)
 	global math
 	math ='add'
+	e.insert(0,'+')
 
 def sub():
 	global first_num
+	if e.get().isdigit():
+		first_num = int(e.get())
+	else:
+		first_num=0
 	first_num = int(e.get())
 	e.delete(0,END)
 	global math
 	math ='sub'
+	e.insert(0,'-')
 
 def mul():
 	global first_num
+	if e.get().isdigit():
+		first_num = int(e.get())
+	else:
+		first_num=0
 	first_num = int(e.get())
 	e.delete(0,END)
 	global math
 	math ='mul'
+	e.insert(0,'*')
 
 def div():
 	global first_num
+	if e.get().isdigit():
+		first_num = int(e.get())
+	else:
+		first_num=0
 	first_num = int(e.get())
 	e.delete(0,END)
 	global math
 	math ='div'
+	e.insert(0,'/')
 
 
 def equ():
@@ -53,7 +74,10 @@ def equ():
 	if math =='mul':
 		e.insert(0, first_num*second_num)
 	if math =='div':
-		e.insert(0, first_num/second_num)
+		try:
+			e.insert(0, first_num/second_num)
+		except ZeroDivisionError:
+			e.insert(0,'Can not divide 0 !')
 
 def cle():
 	e.delete(0,END)
