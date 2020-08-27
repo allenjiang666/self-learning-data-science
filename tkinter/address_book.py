@@ -1,10 +1,12 @@
 from tkinter import *
+from tkinter import ttk
 import sqlite3
 
 root = Tk()
 root.title('Address Book Application')
 root.iconbitmap('calculator.ico')
 root.geometry('400x300')
+root.resizable(False,False)
 
 def submit():
 	#Create a database or connect to one
@@ -48,24 +50,37 @@ def show():
 	top=Toplevel()
 	top.geometry('450x400')
 
-	for i in range(6): 
-		cn = Label(top, text=str(columns[i]), font=('Arial',16,'bold'))
-		cn.grid(row=0, column=i) 
+	tv = ttk.Treeview(top, columns=(1,2,3,4,5,6), show='headings',height='5')
+	tv.pack()
+
+	tv.heading(1, text='First name')
+	tv.heading(2, text='Last name')
+	tv.heading(3, text='Street')
+	tv.heading(4, text='City')
+	tv.heading(5, text='State')
+	tv.heading(6, text='Zipcode')
+
+	# for i in range(6): 
+	# 	cn = Label(top, text=str(columns[i]), font=('Arial',16,'bold'))
+	# 	cn.grid(row=0, column=i) 
 
 	conn = sqlite3.connect('database.db')
 	c =conn.cursor()
 	c.execute('SELECT * FROM addresses')
 	records = c.fetchall()
 
-	for i in range(len(records)): 
-            for j in range(len(records[0])): 
+	for i in records:
+		tv.insert('', 'end', values=i)
+
+	# for i in range(len(records)): 
+ #            for j in range(len(records[0])): 
        
-                e = Label(top, text=str(records[i][j])) 
-                e.grid(row=i+1, column=j) 
+ #                e = Label(top, text=str(records[i][j])) 
+ #                e.grid(row=i+1, column=j) 
  
-	print(records)
-	conn.commit()
-	conn.close()
+	# print(records)
+	# conn.commit()
+	# conn.close()
 
 
 
