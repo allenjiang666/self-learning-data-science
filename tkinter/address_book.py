@@ -47,8 +47,44 @@ def delete():
 	conn.close()
 
 
+
+
+def update():
+	# query from db
+	conn = sqlite3.connect('database.db')
+	c =conn.cursor()
+	c.execute('''UPDATE addresses SET 
+		first_name = :first,
+		last_name = :last,
+		address = :address,
+		city = :city,
+		state = :state,
+		zipcode = :zipcode
+		WHERE oid = (:oid)''',
+		{
+			'oid': Id_root.get(),	
+			'first': f_name.get(),
+			'last': l_name.get(),
+			'address': address.get(),
+			'city': city.get(),
+			'state': state.get(),
+			'zipcode': zipcode.get()
+		})
+	conn.commit()
+	conn.close()
+
+	#delete existing entries
+	f_name.delete(0,END)
+	l_name.delete(0,END)
+	address.delete(0,END)
+	city.delete(0,END)
+	state.delete(0,END)
+	zipcode.delete(0,END)
+	Id_root.delete(0,END)
+
 def show():
 	global Id
+	global tv
 	columns=['Id','First',' Last', 'Street', 'City','State','Zip']
 	top=Toplevel()
 	top.geometry('570x400')
@@ -89,7 +125,7 @@ def show():
 		tv.insert('', 'end', values=i)
 
 	delete_btn = Button(top, text='delete a record', command=delete)
-	delete_btn.grid(row=1,column=2,ipady=4, sticky=W)
+	delete_btn.grid(row=1,column=2, sticky=W)
 
 	Id=Entry(top, width=10)
 	Id.grid(row=1,column=1,sticky=W)
@@ -136,7 +172,12 @@ submit_btn.grid(row=7,column=0, columnspan=2, padx=10, pady=5, ipadx=100)
 show_btn = Button(root, text='Show All Record', command=show)
 show_btn.grid(row=8,column=0, columnspan=2, padx=10, ipadx=124)
 
+update_btn = Button(root, text='Update a record', command=update)
+update_btn.grid(row=9,column=1, padx=10, pady=5, ipadx=89)
 
+Id_root=Entry(root, width=6)
+Id_root.grid(row=9,column=0,sticky=E)
+Id_root.insert(0,"ID:")
 
 
 
