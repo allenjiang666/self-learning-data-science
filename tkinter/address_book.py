@@ -13,15 +13,7 @@ def submit():
 	conn = sqlite3.connect('database.db')
 	#Create a cursor to execute sql quries
 	c = conn.cursor()
-	# Create table
-	# c.execute('''CREATE TABLE addresses(
-	# 	first_name text,
-	# 	last_name text,
-	# 	address text,
-	# 	city text,
-	# 	state text,
-	# 	zipcode integer
-	# )''')
+
 	# insert values 
 	c.execute('INSERT INTO addresses VALUES (:f_name, :l_name, :address, :city, :state, :zipcode)',
 			{
@@ -45,14 +37,37 @@ def submit():
 	state.delete(0,END)
 	zipcode.delete(0,END)
 
+def delete():
+	# query from db
+	conn = sqlite3.connect('database.db')
+	c =conn.cursor()
+	c.execute('DELETE FROM addresses WHERE oid = (:oid)',{'oid':Id.get()})
+	records = c.fetchall()
+	conn.commit()
+	conn.close()
+
+
 def show():
-	columns=['First',' Last', 'Street', 'City','State','Zip']
+	global Id
+	columns=['Id','First',' Last', 'Street', 'City','State','Zip']
 	top=Toplevel()
-	top.geometry('450x400')
+	top.geometry('570x400')
+	top.resizable(False,False)
 
-	tv = ttk.Treeview(top, columns=(1,2,3,4,5,6), show='headings',height='5')
-	tv.pack()
+	tv = ttk.Treeview(top, columns=(0,1,2,3,4,5,6), show='headings', height='5')
+	tv.grid(row=0, column=0, columnspan=3,padx=10)
+	
+	# change columns width
+	for i in range(6):
+		tv.column(i, width=70)
+	# set the street column a bit wider
+	tv.column(3, width=170)
+	tv.column(0, width=20)
+	tv.column(4, width=90)
+	tv.column(6, width=60)
 
+	# change column names
+	tv.heading(0, text='ID')
 	tv.heading(1, text='First name')
 	tv.heading(2, text='Last name')
 	tv.heading(3, text='Street')
@@ -60,33 +75,29 @@ def show():
 	tv.heading(5, text='State')
 	tv.heading(6, text='Zipcode')
 
-	# for i in range(6): 
-	# 	cn = Label(top, text=str(columns[i]), font=('Arial',16,'bold'))
-	# 	cn.grid(row=0, column=i) 
 
+	# query from db
 	conn = sqlite3.connect('database.db')
 	c =conn.cursor()
-	c.execute('SELECT * FROM addresses')
+	c.execute('SELECT oid, * FROM addresses')
 	records = c.fetchall()
+	conn.commit()
+	conn.close()
 
+	#insert each row into tree view
 	for i in records:
 		tv.insert('', 'end', values=i)
 
-	# for i in range(len(records)): 
- #            for j in range(len(records[0])): 
-       
- #                e = Label(top, text=str(records[i][j])) 
- #                e.grid(row=i+1, column=j) 
- 
-	# print(records)
-	# conn.commit()
-	# conn.close()
+	delete_btn = Button(top, text='delete a record', command=delete)
+	delete_btn.grid(row=1,column=2,ipady=4, sticky=W)
+
+	Id=Entry(top, width=10)
+	Id.grid(row=1,column=1,sticky=W)
+	Idl = Label(top, text='ID:')
+	Idl.grid(row=1,column=0,sticky=E)
 
 
-
-
-
-# gui arrangement
+# Label arrangement
 title = Label(root, text='Address Book', font=('Arial',20,'bold'))
 title.grid(row=0, column=0, columnspan=2)
 
@@ -118,12 +129,14 @@ zipcodeL.grid(row=6, column=0)
 
 
 
-
+# Button arrangement
 submit_btn = Button(root, text='Add Record to Database', command=submit)
 submit_btn.grid(row=7,column=0, columnspan=2, padx=10, pady=5, ipadx=100)
 
 show_btn = Button(root, text='Show All Record', command=show)
 show_btn.grid(row=8,column=0, columnspan=2, padx=10, ipadx=124)
+
+
 
 
 
