@@ -27,6 +27,7 @@ lst = [(1,'Raj','Mumbai',19),
 # columns in list 
 total_rows = len(lst) 
 total_columns = len(lst[0]) 
+my_button = Button(root, text='clikc me')
    
 # create root window 
 root = Tk() 
